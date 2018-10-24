@@ -1,0 +1,67 @@
+{
+  "start": "2017-01-01",
+  "end": "2018-01-01",
+
+  "accounts": {
+    "lisk": {
+      "use": true,
+      "coin": "LSK",
+      "exch": "Forging_LSK",
+      "id": "15056673209583244182L",
+      "name": "goldeneye",
+      "pk": "f91766de68f3a8859a3634c3a0fdde38ebd82dd91fc37b67ac6cf010800a3e6e"
+    },
+    "shift": {
+      "use": false,
+      "coin": "SHIFT",
+      "exch": "Forging_SHIFT",
+      "id": "your_delegate_address",
+      "name": "your_delegate_name",
+      "pk": "your_delegate_public_key"
+    },
+    "oxy": {
+      "use": false,
+      "coin": "OXY",
+      "exch": "Forging_OXY",
+      "id": "your_delegate_address",
+      "name": "your_delegate_name",
+      "pk": "your_delegate_public_key"
+    },
+    "rise": {
+      "use": false,
+      "coin": "RISE",
+      "exch": "Forging_RISE",
+      "id": "your_delegate_address",
+      "name": "your_delegate_name",
+      "pk": "your_delegate_public_key"
+    }
+  },
+
+  "nodes": {
+    "lisk": {
+      "newApi": true,
+      "host": "node01.lisk.io",
+      "port": 443
+    },
+    "shift": {
+      "newApi": false,
+      "host": "wallet.shiftnrg.org",
+      "port": 443
+    },
+    "oxy": {
+      "newApi": false,
+      "host": "wallet.oxycoin.io",
+      "port": 443
+    },
+    "rise": {
+      "newApi": false,
+      "host": "wallet.rise.vision",
+      "port": 443
+    }
+  },
+
+  "csv": {
+    "header": "\"Type\",\"Buy\",\"Cur.\",\"Sell\",\"Cur.\",\"Fee\",\"Cur.\",\"Exchange\",\"Group\",\"Comment\",\"TradeID\",\"Date\"\n",
+    "line": "\"{0}\",\"{1}\",\"{2}\",\"\",\"\",\"\",\"\",\"{7}\",\"{3}\",\"Forging {4} blocks each {5} {2} + fees\",\"Forging_{3}_{6}\",\"{6}\"\n"
+  }
+}

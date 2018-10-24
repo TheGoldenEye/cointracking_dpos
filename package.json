@@ -1,0 +1,27 @@
+{
+  "name": "cointracking_dpos",
+  "version": "1.0.0",
+  "description": "Forging reports for cointracking.info",
+  "main": "get_forging.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "TheGoldenEye",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheGoldenEye/cointracking_dpos.git"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "async": "^2.6.1",
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
+    "querystring": "^0.2.0",
+    "string-format": "^2.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/TheGoldenEye/cointracking_dpos/issues"
+  },
+  "homepage": "https://github.com/TheGoldenEye/cointracking_dpos#readme",
+  "devDependencies": {}
+}
