@@ -81,7 +81,7 @@ function red(txt) {
   return colFgYellow+txt+colReset;
 }
 
-  //------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
 function accountData(account, d) {
   var ign = cfg.accountDatas.ignore[account];
   var res = cfg.accountDatas.names[account];
