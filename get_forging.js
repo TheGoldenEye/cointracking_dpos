@@ -126,6 +126,19 @@ function precisionRound(number, precision)
   }
 
 //---------------------------------------
+function mkdir(dirPath)
+  {
+  try
+    {
+    fs.mkdirSync(dirPath)
+    }
+  catch (err)
+    {
+    if (err.code !== 'EEXIST') throw err
+    }
+  }
+
+//---------------------------------------
 //---------------------------------------
 // main
 
@@ -141,12 +154,15 @@ function main(account, intervall, idx, cb)
 
   data.start    = intervall.start;
   data.end      = intervall.end;
-  data.fileName = TimeStr(endTime, true, false) + '_' + data.coin + '_' + data.name + '_FORGING.csv';
+  data.fileName = cfg.outputDir + TimeStr(endTime, true, false) + '_' + data.coin + '_' + data.name + '_FORGING.csv';
 
   data.cb       = cb;
 
   if (idx==0)
     {
+    if (cfg.outputDir)
+      mkdir(cfg.outputDir);
+
     if (fs.existsSync(data.fileName))
       fs.unlinkSync(data.fileName);
 

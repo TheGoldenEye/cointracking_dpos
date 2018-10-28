@@ -44,6 +44,8 @@ Configuration is done with `get_forging_config.json` file. Please save the `get_
 
 `start` and `end` defines the time intervall
 
+`outputDir` is the directory where the csv files will be created
+
 In the `accounts` section you can define the delegate data and which coins you want to use.
 * If `use` is set to true, then the data for this coin are queried
 * `exch` defines the 'exchange' shown in cointracking, any value is possible
@@ -60,7 +62,7 @@ In the `csv` section you can overwrite the templates for the header and the data
 ```
 node get_forging.js
 ```
-The output files are written to the current directory.
+The output files are written to the configured `outputDir` directory.
 
 ## 4 get_tx.js script
 
@@ -69,6 +71,8 @@ After the import the data is considered in the "Tax Report", sections "Income Re
 
 ### 4.1 Configuration
 Configuration is done with `get_tx_config.json` file. Please save the `get_tx_config.json.template` file as `get_tx_config.json`.
+
+`outputDir` is the directory where the csv files will be created
 
 In the `accounts` section you have to define the accounts to analyse. You should delete the dummy entries here.
 You can use the comment field for your own purposes.
@@ -96,7 +100,7 @@ Here you should define all accounts of yourself, your exchange deposit addresses
 ```
 node get_tx.js
 ```
-The output files are written to the current directory.
+The output files are written to the configured `outputDir` directory.
 
 ## 5 Authors
 - Goldeneye

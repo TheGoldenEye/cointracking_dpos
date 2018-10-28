@@ -1,4 +1,6 @@
 {
+  "outputDir": "./output/",
+
   "accounts": {
     "lisk": [
       { "id": "1111111111111111111L", "comment": "any comment (not used)" },

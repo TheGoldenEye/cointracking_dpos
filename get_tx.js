@@ -217,6 +217,19 @@ function voteTx(tx)
   }
 
 //---------------------------------------
+function mkdir(dirPath)
+  {
+  try
+    {
+    fs.mkdirSync(dirPath)
+    }
+  catch (err)
+    {
+    if (err.code !== 'EEXIST') throw err
+    }
+  }
+
+//---------------------------------------
 //---------------------------------------
 // main
 
@@ -227,7 +240,7 @@ function main(coin, node, account, idx, async_cb)
   data.node      = node;
   data.account   = account.id;
   data.async_cb  = async_cb;
-  data.fileName  = CurrentTimeStr() + '_' + coin + '_WALLETS.csv';
+  data.fileName  = cfg.outputDir + CurrentTimeStr() + '_' + coin + '_WALLETS.csv';
   data.newApi    = node.newApi;
   data.notFound  = [];         // accountID not found in accountData
 
@@ -235,6 +248,9 @@ function main(coin, node, account, idx, async_cb)
 
   if (idx==0)
     {
+    if (cfg.outputDir)
+      mkdir(cfg.outputDir);
+
     if (fs.existsSync(data.fileName))
       fs.unlinkSync(data.fileName);
 
