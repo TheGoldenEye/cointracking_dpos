@@ -34,8 +34,11 @@ function apiGet(path, params, cb) {
     });
 
     response.on('end', function() {
-      var parsed = JSON.parse(body);
-      cb( parsed );
+      var parsed = ParseJsonString(body);
+      if (parsed)
+        cb( parsed );
+      else
+        data.cb(red(body));
     });
   });
   
@@ -70,6 +73,15 @@ function TimeStr(timestamp, date, time)
     }
 
   return s;
+  }
+
+//---------------------------------------
+function ParseJsonString(str) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return undefined;
+    }
   }
 
 //---------------------------------------

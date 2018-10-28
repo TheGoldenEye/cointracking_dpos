@@ -30,8 +30,11 @@ function apiGet(path, params, cb) {
     });
 
     response.on('end', function() {
-      var parsed = JSON.parse(body);
-      cb( parsed );
+      var parsed = ParseJsonString(body);
+      if (parsed)
+        cb( parsed );
+      else
+        data.cb(red(body));
     });
   });
   
@@ -121,6 +124,15 @@ function CurrentTimeStr()
   {
   var d  = new Date();
   return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
+//---------------------------------------
+function ParseJsonString(str) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return undefined;
+    }
   }
 
 //---------------------------------------
