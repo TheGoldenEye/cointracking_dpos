@@ -179,7 +179,8 @@ function main(account, intervall, idx, cb)
 // rewards from Block 10
 
 var beginTime   = new Date(cfg.start).getTime();
-var endTime     = new Date(cfg.end).getTime()-1;   // last ms of day before
+var endTime     = new Date(cfg.end).getTime();
+var nowTime     = new Date().getTime();
 var vctLisk     = [];
 var vctShift    = [];
 var vctOxy      = [];
@@ -188,17 +189,21 @@ var totalForged = {};
 var t;
 var data;
 
+//correct endTime, if in the future
+if (endTime>nowTime)
+  endTime = nowTime-86400000;                      // only use complete days
+
 // collect time slices (days)
-for (t=beginTime; t<endTime; t+=86400000)
+for (t=beginTime; t<=endTime; t+=86400000)
   vctLisk.push( {start: t, end: t+86399999} );
 
-for (t=beginTime; t<endTime; t+=86400000) 
+for (t=beginTime; t<=endTime; t+=86400000) 
   vctShift.push( {start: t, end: t+86399999} );
 
-for (t=beginTime; t<endTime; t+=86400000)
+for (t=beginTime; t<=endTime; t+=86400000)
   vctOxy.push( {start: t, end: t+86399999} );
 
-for (t=beginTime; t<endTime; t+=86400000)
+for (t=beginTime; t<=endTime; t+=86400000)
   vctRise.push( {start: t, end: t+86399999} );
 
 // lisk
