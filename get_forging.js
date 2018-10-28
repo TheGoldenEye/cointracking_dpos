@@ -241,7 +241,7 @@ async.eachOfSeries(vctLisk,
   },  
   function(err) {
     if ( err )
-      console.log('Lisk:', err);
+      console.log('Lisk:', err, '            ');
     else
       console.log('Lisk  total forged: %s %s     ', totalForged[data.coin], data.coin);
 
@@ -252,7 +252,7 @@ async.eachOfSeries(vctLisk,
     },
     function(err) {
       if ( err )
-        console.log('Shift:', err);
+        console.log('Shift:', err, '            ');
       else
         console.log('Shift total forged: %s %s     ', totalForged[data.coin], data.coin);
 
@@ -263,7 +263,7 @@ async.eachOfSeries(vctLisk,
       },  
       function(err) {
         if ( err )
-          console.log('Oxy:', err);
+          console.log('Oxy:', err, '            ');
         else
           console.log('Oxy   total forged: %s %s     ', totalForged[data.coin], data.coin);
 
@@ -274,7 +274,7 @@ async.eachOfSeries(vctLisk,
         },  
         function(err) {
           if ( err )
-            console.log('Rise:', err);
+            console.log('Rise:', err, '            ');
           else
             console.log('Rise  total forged: %s %s     ', totalForged[data.coin], data.coin);
         });
