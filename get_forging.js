@@ -42,7 +42,7 @@ function apiGet(path, params, cb) {
   req.end();
   
   req.on('error', function(e) {
-    console.error(e);
+    data.cb(e.toString());
   });
 };
 
