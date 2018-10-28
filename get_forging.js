@@ -42,7 +42,7 @@ function apiGet(path, params, cb) {
   req.end();
   
   req.on('error', function(e) {
-    data.cb(e.toString());
+    data.cb(red(e.toString()));
   });
 };
 
@@ -84,7 +84,7 @@ function forgeCallback(result)
     }
   else
     {
-    data.cb(data.node.newApi ? result.description : result.error);
+    data.cb(red(data.node.newApi ? result.description : result.error));
     }
   };
   
@@ -101,6 +101,21 @@ function processForged(result)
   if (sForged!=0)
     fs.appendFileSync(data.fileName, format(cfg.csv.line, 'Mining', sForged, data.coin, data.id, result.count, precisionRound(rewardBl, 4), date, data.exch));
   }
+
+//------------------------------------------------------------------------------------
+const colReset       = "\x1b[0m";
+const colFgGreen     = "\x1b[32m";
+const colFgYellow    = "\x1b[33m";
+
+//------------------------------------------------------------------------------------
+function green(txt) {
+  return colFgGreen+txt+colReset;
+}
+
+//------------------------------------------------------------------------------------
+function red(txt) {
+  return colFgYellow+txt+colReset;
+}
 
 //---------------------------------------
 // exact round
