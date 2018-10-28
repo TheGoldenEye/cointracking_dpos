@@ -17,7 +17,7 @@ function accountData(account) {
 }
 
 //------------------------------------------------------------------------------------
-function apiGet(coin, path, params, cb) {
+function apiGet(path, params, cb) {
 
   var options = {
     host: data.node.host,
@@ -150,7 +150,7 @@ function main(account, intervall, idx, cb)
     path   = '/api/delegates/forging/getForgedByAccount/';
     params = { generatorPublicKey: data.pk, start: Math.floor(data.start/1000), end: Math.floor(data.end/1000)};
     }
-  apiGet(data.coin, path, params, forgeCallback);
+  apiGet(path, params, forgeCallback);
   }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
