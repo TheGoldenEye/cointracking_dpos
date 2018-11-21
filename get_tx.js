@@ -88,10 +88,13 @@ function red(txt) {
 
 //------------------------------------------------------------------------------------
 function accountData(account, d) {
-  var ign = cfg.accountDatas.ignore[account];
-  var res = cfg.accountDatas.names[account];
-  d.name  =  res ? res.name : ign ? ign.name : account;
-  d.ign   =  ign ? true : false;
+  var ign    = cfg.accountDatas.ignore[account];
+  var res    = cfg.accountDatas.names[account];
+  var intern = cfg.analysed.includes(account);  // internal account (to be analysed here)
+
+  d.name     = res ? res.name : ign ? ign.name : account;
+  d.ign      = ign ? !(cfg.createInternalTx && intern) : false;      // do not ignore tx, if internal tx should be created
+  d.intern   = intern;
 
   if (!res && !ign && !data.notFound.includes(account))
     {
@@ -185,8 +188,10 @@ function outTx(tx)
   if (tx.asset && tx.asset.data)
     ref = ' [' +  tx.asset.data + ']';
 
-//  console.log('Donation %s > %s %s', tx.amount/1e8, accID, ref);
-  fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+  if (d.intern)
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Withdrawal', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+  else
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
   }
 
 //---------------------------------------
@@ -206,8 +211,10 @@ function inTx(tx)
   if (tx.asset && tx.asset.data)
   ref = ' [' +  tx.asset.data + ']';
 
-//  console.log(green('Pool %s < %s %s'), tx.amount/1e8, accID, ref);
-  fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Gift/Tip', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+  if (d.intern)
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Deposit', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+  else
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Gift/Tip', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
   }
   
 //---------------------------------------
@@ -282,6 +289,14 @@ function main(coin, node, account, idx, async_cb)
 cfg = extend(false, cfg_tpl, cfg);
 
 var data = {};
+
+// remember the accounts to analyse
+cfg.analysed = [];
+for (let coin in cfg.accounts) {
+  cfg.accounts[coin].forEach(element => {
+    cfg.analysed.push(element.id);
+  });
+}
 
 async.eachOfSeries(cfg.accounts.lisk,
   function(account, idx, cb) {

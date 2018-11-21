@@ -74,6 +74,8 @@ Configuration is done with `get_tx_config.json` file. Please save the `get_tx_co
 
 `outputDir` is the directory where the csv files will be created
 
+If `createInternalTx` is set to true, internal transactions between the analysed accounts are considered (creates Deposit/Withdrawal pairs for account transfers)
+
 In the `accounts` section you have to define the accounts to analyse. You should delete the dummy entries here.
 You can use the comment field for your own purposes.
 

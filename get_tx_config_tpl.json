@@ -1,5 +1,6 @@
 {
-  "outputDir": "./output/",
+  "outputDir":        "./output/",
+  "createInternalTx": false,
 
   "accounts": {
     "lisk": [
