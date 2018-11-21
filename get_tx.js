@@ -224,7 +224,7 @@ function delegateTx(tx)
   tx.amount = Number(tx.amount);
   tx.fee = Number(tx.fee);
   
-  fs.appendFileSync(data.fileName, format(cfg.csv.delegate, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp)));
+  fs.appendFileSync(data.fileName, format(cfg.csv.delegate, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
   }
 
 //---------------------------------------
@@ -234,7 +234,7 @@ function voteTx(tx)
   tx.amount = Number(tx.amount);
   tx.fee = Number(tx.fee);
   
-  fs.appendFileSync(data.fileName, format(cfg.csv.vote, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp)));
+  fs.appendFileSync(data.fileName, format(cfg.csv.vote, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
   }
 
 //---------------------------------------

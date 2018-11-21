@@ -1,6 +1,7 @@
 {
   "outputDir":        "./output/",
   "createInternalTx": false,
+  "fiat_currency":    "EUR",
 
   "accounts": {
     "lisk": [
@@ -40,10 +41,10 @@
 
   "csv": {
     "header":   "\"Type\",\"Buy\",\"Cur.\",\"Sell\",\"Cur.\",\"Fee\",\"Cur.\",\"Exchange\",\"Group\",\"Comment\",\"TradeID\",\"Date\"\n",
-    "delegate": "\"Trade\",\"0\",\"BTC\",\"{0}\",\"{1}\",\"{0}\",\"{1}\",\"Wallet_{1}\",\"{3}\",\"tx:{2} Delegate Registration\",\"Wallet_{3}_{2}\",\"{4}\"\n",
+    "delegate": "\"Trade\",\"0\",\"{5}\",\"{0}\",\"{1}\",\"{0}\",\"{1}\",\"Wallet_{1}\",\"{3}\",\"tx:{2} Delegate Registration\",\"Wallet_{3}_{2}\",\"{4}\"\n",
     "inTx":     "\"{0}\",\"{1}\",\"{2}\",\"\",\"\",\"{3}\",\"{2}\",\"Wallet_{2}\",\"{5}\",\"tx:{4} from {7}{8}\",\"Wallet_{5}_{4}\",\"{6}\"\n",
     "outTx":    "\"{0}\",\"\",\"\",\"{1}\",\"{2}\",\"{3}\",\"{2}\",\"Wallet_{2}\",\"{5}\",\"tx:{4} to {7}{8}\",\"Wallet_{5}_{4}\",\"{6}\"\n",
-    "vote":     "\"Trade\",\"0\",\"BTC\",\"{0}\",\"{1}\",\"{0}\",\"{1}\",\"Wallet_{1}\",\"{3}\",\"tx:{2} Voting Fee\",\"Wallet_{3}_{2}\",\"{4}\"\n"
+    "vote":     "\"Trade\",\"0\",\"{5}\",\"{0}\",\"{1}\",\"{0}\",\"{1}\",\"Wallet_{1}\",\"{3}\",\"tx:{2} Voting Fee\",\"Wallet_{3}_{2}\",\"{4}\"\n"
   },
 
   "accountDatas": {

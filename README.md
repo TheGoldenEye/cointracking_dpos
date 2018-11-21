@@ -77,6 +77,8 @@ Configuration is done with `get_tx_config.json` file. Please save the `get_tx_co
 If `createInternalTx` is set to true, internal transactions between the analysed accounts are considered (creates Deposit/Withdrawal pairs for account transfers).
 This setting overwrites the ignore list (see later) for internal transactions.
 
+The `fiat_currency` is only used for fee transactions and transactiions with zero cost base.
+
 In the `accounts` section you have to define the accounts to analyse. You should delete the dummy entries here.
 You can use the comment field for your own purposes.
 
