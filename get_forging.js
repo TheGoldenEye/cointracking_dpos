@@ -6,7 +6,9 @@ var querystring = require('querystring');
 var format = require('string-format');
 var fs = require('fs');
 var async = require('async');
+var extend = require('extend');
 var cfg = require('./get_forging_config.json');
+var cfg_tpl = require('./get_forging_config_tpl.json');
 
 //------------------------------------------------------------------------------------
 function accountData(account) {
@@ -197,6 +199,10 @@ function main(account, intervall, idx, cb)
   }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//apply config defaults (not deep, only root level)
+cfg = extend(false, cfg_tpl, cfg);
+
 // Lisk
 // 1st Block with rewards: https://explorer.lisk.io/block/14795541625652526135
 // 2016/11/30 17:38:00

@@ -6,7 +6,9 @@ var querystring = require('querystring');
 var format = require('string-format');
 var fs = require('fs');
 var async = require('async');
+var extend = require('extend');
 var cfg = require('./get_tx_config.json');
+var cfg_tpl = require('./get_tx_config_tpl.json');
 
 function apiGet(path, params, cb) {
 
@@ -275,6 +277,9 @@ function main(coin, node, account, idx, async_cb)
   }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//apply config defaults (not deep, only root level)
+cfg = extend(false, cfg_tpl, cfg);
 
 var data = {};
 
