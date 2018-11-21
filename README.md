@@ -40,7 +40,7 @@ The script creates a detailed report of forged coins in a given timeframe on a d
 After the import the data is considered in the "Tax Report", section "Income Report"
 
 ### 3.1 Configuration
-Configuration is done with `get_forging_config.json` file. Please save the `get_forging_config.json.template` file as `get_forging_config.json`.
+Configuration is done with `get_forging_config.json` file. Please save the `get_forging_config_tpl.json` file as `get_forging_config.json`.
 
 `start` and `end` defines the time intervall
 
@@ -70,7 +70,7 @@ The script creates a detailed report of sharing rewards and donations for the gi
 After the import the data is considered in the "Tax Report", sections "Income Report" and Donation Report
 
 ### 4.1 Configuration
-Configuration is done with `get_tx_config.json` file. Please save the `get_tx_config.json.template` file as `get_tx_config.json`.
+Configuration is done with `get_tx_config.json` file. Please save the `get_tx_config_tpl.json` file as `get_tx_config.json`.
 
 `outputDir` is the directory where the csv files will be created
 
