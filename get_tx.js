@@ -190,6 +190,10 @@ function outTx(tx)
 
   if (d.intern)
     fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Withdrawal', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+  else if (cfg.zeroCostBase)
+    // Currently it's not possible to import data with asset value=0 (zero cost base) in cointracking
+    // we emulate this with a "Trade" transaction
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx0, 'Trade', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref, 0.00000001, cfg.fiat_currency));
   else
     fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
   }
@@ -213,6 +217,10 @@ function inTx(tx)
 
   if (d.intern)
     fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Deposit', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+  else if (cfg.zeroCostBase)
+    // Currently it's not possible to import data with asset value=0 (zero cost base) in cointracking
+    // we emulate this with a "Trade" transaction
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx0, 'Trade', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, 0.00000001, cfg.fiat_currency));
   else
     fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Gift/Tip', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
   }
