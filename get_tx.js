@@ -82,7 +82,7 @@ function green(txt) {
 }
   
 //------------------------------------------------------------------------------------
-function red(txt) {
+function yellow(txt) {
   return colFgYellow+txt+colReset;
 }
 
@@ -98,7 +98,7 @@ function accountData(account, d) {
 
   if (!res && !ign && !data.notFound.includes(account))
     {
-    console.warn("  => Please add account %s to accountDatas.names section in get_tx_config.json", account);
+    console.warn(yellow("  => Please add account %s to accountDatas.names or .ignore or .external section in get_tx_config.json"), account);
     data.notFound.push(account);
     }
   return d.name;
@@ -152,11 +152,17 @@ function txCallback(result)
     arr.forEach(function(tx) {
       if (tx.type==0)       // send
         tx.senderId==data.account ? outTx(tx) : inTx(tx);
+      else if (tx.type==1)  // second signature creation
+        secondsigTx(tx);
       else if (tx.type==2)  // delegate registration
         delegateTx(tx);
       else if (tx.type==3)  // vote
         voteTx(tx)
-    });    
+      else if (tx.type==4)  // multisignature creation
+        multisigTx(tx)
+      else
+        console.warn(yellow("  => Unknown Transaction Type: %d"), tx.type);
+    });
     
     if (count>data.ofs+arr.length)
       {
@@ -226,12 +232,16 @@ function inTx(tx)
   }
   
 //---------------------------------------
+// second signature creation
+function secondsigTx(tx)
+  {
+  fs.appendFileSync(data.fileName, format(cfg.csv.secondsig, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
+  }
+
+//---------------------------------------
 // delegate registration
 function delegateTx(tx)
   {
-  tx.amount = Number(tx.amount);
-  tx.fee = Number(tx.fee);
-  
   fs.appendFileSync(data.fileName, format(cfg.csv.delegate, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
   }
 
@@ -239,10 +249,14 @@ function delegateTx(tx)
 // vote
 function voteTx(tx)
   {
-  tx.amount = Number(tx.amount);
-  tx.fee = Number(tx.fee);
-  
   fs.appendFileSync(data.fileName, format(cfg.csv.vote, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
+  }
+
+//---------------------------------------
+// multisignature creation
+function multisigTx(tx)
+  {
+  fs.appendFileSync(data.fileName, format(cfg.csv.multisig, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
   }
 
 //---------------------------------------
