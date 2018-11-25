@@ -55,6 +55,8 @@
   "accountDatas": {
     "ignore": {
       "1111111111111111111L" : { "name": "account1", "comment": "my own account" },
+    },
+    "external": {
       "2222222222222222222L" : { "name": "bittrex",  "comment": "exchange account" }
     },
     "names": {

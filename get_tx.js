@@ -89,14 +89,16 @@ function yellow(txt) {
 //------------------------------------------------------------------------------------
 function accountData(account, d) {
   var ign    = cfg.accountDatas.ignore[account];
+  var intern = cfg.accountDatas.internal[account];
+  var ext    = cfg.accountDatas.external[account];
   var res    = cfg.accountDatas.names[account];
-  var intern = cfg.analysed.includes(account);  // internal account (to be analysed here)
 
-  d.name     = res ? res.name : ign ? ign.name : account;
-  d.ign      = ign ? !(cfg.createInternalTx && intern) : false;      // do not ignore tx, if internal tx should be created
+  d.name     = res ? res.name : ign ? ign.name : intern ? intern.name : ext ? ext.name : account;
+  d.ign      = ign ? (!(cfg.createInternalTx && intern) && !ext) : false;  // do not ignore tx, if internal/external tx should be created
   d.intern   = intern;
+  d.extern   = ext;
 
-  if (!res && !ign && !data.notFound.includes(account))
+  if (d.name==account && !data.notFound.includes(account))
     {
     console.warn(yellow("  => Please add account %s to accountDatas.names or .ignore or .external section in get_tx_config.json"), account);
     data.notFound.push(account);
@@ -184,24 +186,35 @@ function outTx(tx)
   var d = {};
   var accID = accountData(tx.recipientId, d);
   
+  tx.amount     = Number(tx.amount);
+  tx.amount2    = Number(tx.amount/1e8).toFixed(8);
+  tx.fee        = Number(tx.fee);
+  tx.fee2       = Number(tx.fee/1e8).toFixed(8);
+  tx.amountFee2 = Number((tx.amount+tx.fee)/1e8).toFixed(8);
+
   if (d.ign)  // ignore tx
+    {
+    console.warn('  >> out: tx %s (%s %s) to %s ignored', tx.id, tx.amount2, data.coin, accID);
     return;
-  
-  tx.amount = Number(tx.amount);
-  tx.fee = Number(tx.fee);
+    }
 
   var ref = '';
   if (tx.asset && tx.asset.data)
     ref = ' [' +  tx.asset.data + ']';
 
-  if (d.intern)
-    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Withdrawal', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+  if (d.extern)
+    {
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    fs.appendFileSync(data.fileNameExt, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    }
+  else if (d.intern)
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Withdrawal', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
   else if (cfg.zeroCostBase)
     // Currently it's not possible to import data with asset value=0 (zero cost base) in cointracking
     // we emulate this with a "Trade" transaction
-    fs.appendFileSync(data.fileName, format(cfg.csv.outTx0, 'Trade', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref, 0.00000001, cfg.fiat_currency));
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx0, 'Trade', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, 0.00000001, cfg.fiat_currency));
   else
-    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', Number((tx.amount+tx.fee)/1e8).toFixed(8), data.coin, Number(tx.fee/1e8).toFixed(8), tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
   }
 
 //---------------------------------------
@@ -211,24 +224,37 @@ function inTx(tx)
   var d = {};
   var accID = accountData(tx.senderId, d);
   
-  if (d.ign)  // ignore tx
-    return;
+  tx.amount     = Number(tx.amount);
+  tx.amount2    = Number(tx.amount/1e8).toFixed(8);
+  tx.fee        = Number(tx.fee);
+  tx.fee2       = Number(tx.fee/1e8).toFixed(8);
+  tx.amountFee2 = Number((tx.amount+tx.fee)/1e8).toFixed(8);
 
-  tx.amount = Number(tx.amount);
-  tx.fee = Number(tx.fee);
+
+  if (d.ign)  // ignore tx
+    {
+    console.warn('  << in: tx %s (%s %s) from %s ignored', tx.id, tx.amount2, data.coin, accID);
+    return;
+    }
 
   var ref = '';
   if (tx.asset && tx.asset.data)
   ref = ' [' +  tx.asset.data + ']';
 
-  if (d.intern)
-    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Deposit', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+  if (d.extern)
+    {
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    fs.appendFileSync(data.fileNameExt, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    return;
+    }
+  else if (d.intern)
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Deposit', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
   else if (cfg.zeroCostBase)
     // Currently it's not possible to import data with asset value=0 (zero cost base) in cointracking
     // we emulate this with a "Trade" transaction
-    fs.appendFileSync(data.fileName, format(cfg.csv.inTx0, 'Trade', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, 0.00000001, cfg.fiat_currency));
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx0, 'Trade', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, 0.00000001, cfg.fiat_currency));
   else
-    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Gift/Tip', Number(tx.amount/1e8).toFixed(8), data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Gift/Tip', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
   }
   
 //---------------------------------------
@@ -278,14 +304,15 @@ function mkdir(dirPath)
 
 function main(coin, node, account, idx, async_cb)
   {
-  data.ofs       = 0;
-  data.coin      = coin;
-  data.node      = node;
-  data.account   = account.id;
-  data.async_cb  = async_cb;
-  data.fileName  = cfg.outputDir + CurrentTimeStr() + '_' + coin + '_WALLETS.csv';
-  data.newApi    = node.newApi;
-  data.notFound  = [];         // accountID not found in accountData
+  data.ofs         = 0;
+  data.coin        = coin;
+  data.node        = node;
+  data.account     = account.id;
+  data.async_cb    = async_cb;
+  data.fileName    = cfg.outputDir + CurrentTimeStr() + '_' + coin + '_WALLETS.csv';
+  data.fileNameExt = cfg.outputDir + CurrentTimeStr() + '_' + coin + '_WALLETS_ext.csv';
+  data.newApi      = node.newApi;
+  data.notFound    = [];         // accountID not found in accountData
 
   console.log('Importing account %s ...', data.account);
 
@@ -296,8 +323,11 @@ function main(coin, node, account, idx, async_cb)
 
     if (fs.existsSync(data.fileName))
       fs.unlinkSync(data.fileName);
+    if (fs.existsSync(data.fileNameExt))
+      fs.unlinkSync(data.fileNameExt);
 
     fs.writeFileSync(data.fileName, cfg.csv.header);
+    fs.writeFileSync(data.fileNameExt, cfg.csv.header);
     }
 
 
@@ -313,10 +343,10 @@ cfg = extend(false, cfg_tpl, cfg);
 var data = {};
 
 // remember the accounts to analyse
-cfg.analysed = [];
+cfg.accountDatas.internal = {};
 for (let coin in cfg.accounts) {
   cfg.accounts[coin].forEach(element => {
-    cfg.analysed.push(element.id);
+    cfg.accountDatas.internal[element.id] = element;
   });
 }
 

@@ -66,8 +66,20 @@ The output files are written to the configured `outputDir` directory.
 
 ## 4 get_tx.js script
 
-The script creates a detailed report of sharing rewards and donations for the given accounts.
-After the import the data is considered in the "Tax Report", sections "Income Report" and Donation Report
+The script analyses the given accounts and creates a detailed report of all transactions (sharing rewards, donations, deposit/withdrawal, ...).
+You can classify accounts in 4 categories:
+1. your own accounts (the accounts to be analyzed are automatically in this category)<br>
+If `createInternalTx` is enabled, the script creates deposit/withdrawal transactions between the accounts (no tax relevance)
+2. external accounts<br>
+Transactions *from* or *to* external accounts have tax relevance, they are declared as *Income* or *Spent* transactions in Cointracking.
+You can use this account type, if you have to differentiate between commercial and private earnings. If external accounts exist,
+the script creates matching *Income*/*Spent* transactions in two csv files. The 2nd one is for import in another Cointracking Instance (of the external accounts).
+3. accounts to ignore<br>
+Transactions from or to these accounts are ignored. You can use this for own accounts, which are not in the list of accounts to analyze or for other reasons.<br>
+**Handle these transactions with caution, especially on the tax relevance.**
+4. all other accounts<br>
+The remaining accounts are considered as accounts from which you received sharing rewards or to whom you donated. After the import you can find the the data in the "Tax Report", sections "Income Report" (Gift) and Donation Report.
+
 
 ### 4.1 Configuration
 Configuration is done with `get_tx_config.json` file. Please save the `get_tx_config_tpl.json` file as `get_tx_config.json`.
@@ -85,10 +97,16 @@ In the `accounts` section you have to define the accounts to analyse. You should
 You can use the comment field for your own purposes.
 
 For each account all transactions will be checked:
-* Outgoing transactions are considered as donations to other (foreign) accounts / users etc.
-* Incoming transactions are considered as gift from other accounts / users etc.
-
-To filter out tx to/from own accounts, exchange accounts or other accounts to ignore, please use the `accountDatas.ignore` list
+* Outgoing transactions to
+  - own account: Create "Withdrawal" (if `createInternalTx` is set)
+  - external account: Create a "Spent" and a corresponding "Income" record in the 2nd *_ext.csv
+  - ignored account: -
+  - all other accounts: Create a "Donation" to the account (user)
+* Incoming transactions from
+  - own account: Create "Deposit" (if `createInternalTx` is set)
+  - external account: Create "Income" and a corresponding "Spend" record in the 2nd *_ext.csv
+  - ignored account: -
+  - all other accounts: Create a "Gift" from the account (user)
 
 In the `nodes` section you can change the defaults and define your own nodes to use (**node must allow API access**)
 * `newApi`: the core 1.0 API should be used or not
@@ -97,10 +115,8 @@ In the `nodes` section you can change the defaults and define your own nodes to 
 
 In the `csv` section you can overwrite the templates for the header and the different data lines in the csv file (e.g. adaptation to other languages)
 
-The `accountDatas` section consists of two lists, an ignore and a names list. Each entry defines an accountID, the associated account name and an optional comment field (not used by the script).
-* `accountDatas.ignore`: Outgoing tx to and incoming tx from these accounts will be ignored.
-Here you should define all accounts of yourself, your exchange deposit addresses and all the accounts you want not consider for other reasons.
-* `accountDatas.names`: This list implements a accounID->Name Mapping. If the script find an account in this list, the name is used in the csv file instead of the account address.
+The `accountDatas` section consists of three lists, the `ignore` and the `external` list where described above.
+The 3rd list, the `accountDatas.names` list, implements an accounID->Name Mapping. If the script find an account in this list, the name is used in the csv file instead of the account address.
 
 
 ### 4.2 Start
@@ -116,3 +132,8 @@ The output files are written to the configured `outputDir` directory.
 Apache-2.0
 
 Copyright (c) 2018 GoldenEye
+
+**Disclaimer:
+The scripts are provided as-is. I cannot give a guarantee for accuracy and I assume NO LIABILITY.
+The tool can only support you in the data preparation for the tax return, in the end you are responsible yourself for your data.**
+
