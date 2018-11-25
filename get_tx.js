@@ -350,6 +350,8 @@ var data = {};
 cfg.accountDatas.internal = {};
 for (let coin in cfg.accounts) {
   cfg.accounts[coin].forEach(element => {
+    if (!element.name)
+      element.name = element.comment || element.id;
     cfg.accountDatas.internal[element.id] = element;
   });
 }
