@@ -323,11 +323,15 @@ function main(coin, node, account, idx, async_cb)
 
     if (fs.existsSync(data.fileName))
       fs.unlinkSync(data.fileName);
-    if (fs.existsSync(data.fileNameExt))
-      fs.unlinkSync(data.fileNameExt);
-
     fs.writeFileSync(data.fileName, cfg.csv.header);
-    fs.writeFileSync(data.fileNameExt, cfg.csv.header);
+
+    // create csv for external accounts only if needed
+    if (Object.keys(cfg.accountDatas.external).length)
+      {
+      if (fs.existsSync(data.fileNameExt))
+        fs.unlinkSync(data.fileNameExt);
+      fs.writeFileSync(data.fileNameExt, cfg.csv.header);
+      }
     }
 
 
