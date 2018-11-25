@@ -54,10 +54,11 @@
 
   "accountDatas": {
     "ignore": {
-      "1111111111111111111L" : { "name": "account1", "comment": "my own account" },
+      "1111111111111111111L" : { "name": "account1", "comment": "Please remove this line if not needed" },
+      "2222222222222222222L" : { "name": "account2", "comment": "Please remove this line if not needed" }
     },
     "external": {
-      "2222222222222222222L" : { "name": "bittrex",  "comment": "exchange account" }
+      "3333333333333333333L" : { "name": "bittrex",  "comment": "exchange account - Please remove this line if not needed" }
     },
     "names": {
       "16010222169256538112L": { "name": "4miners.net" },
