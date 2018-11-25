@@ -36,7 +36,7 @@ function apiGet(path, params, cb) {
       if (parsed)
         cb( parsed );
       else
-        data.cb(red(body));
+        data.cb(yellow(body));
     });
   });
   
@@ -356,7 +356,7 @@ async.eachOfSeries(cfg.accounts.lisk,
   },  
   function(err) {
     if ( err )
-      console.log(red(err));
+      console.log(yellow(err));
 
   async.eachOfSeries(cfg.accounts.shift,
     function(account, idx, cb) {
@@ -364,7 +364,7 @@ async.eachOfSeries(cfg.accounts.lisk,
     },
     function(err) {
       if ( err )
-        console.log(red(err));
+        console.log(yellow(err));
 
       async.eachOfSeries(cfg.accounts.rise,
         function(account, idx, cb) {
@@ -372,7 +372,7 @@ async.eachOfSeries(cfg.accounts.lisk,
         },  
         function(err) {
           if ( err )
-            console.log(red(err));
+            console.log(yellow(err));
           
           async.eachOfSeries(cfg.accounts.oxy,
             function(account, idx, cb) {
@@ -380,7 +380,7 @@ async.eachOfSeries(cfg.accounts.lisk,
             },  
             function(err) {
               if ( err )
-                console.log(red(err));
+                console.log(yellow(err));
               
             });
         });
