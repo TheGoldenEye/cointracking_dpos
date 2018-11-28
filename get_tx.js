@@ -359,13 +359,14 @@ function main(coin, node, account, idx, async_cb)
   data.coin        = coin;
   data.node        = node;
   data.account     = account.id;
+  data.accountName = account.name || account.comment;
   data.async_cb    = async_cb;
   data.fileName    = cfg.outputDir + CurrentTimeStr() + '_' + coin + '_WALLETS.csv';
   data.fileNameExt = cfg.outputDir + CurrentTimeStr() + '_' + coin + '_WALLETS_ext.csv';
   data.newApi      = node.newApi;
   data.notFound    = [];         // accountID not found in accountData
 
-  console.log('Importing account %s ...', data.account);
+  console.log('Importing account %s (%s) ...', data.account, data.accountName);
 
   if (idx==0)
     {
