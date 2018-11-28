@@ -115,6 +115,17 @@ In the `nodes` section you can change the defaults and define your own nodes to 
 
 In the `csv` section you can overwrite the templates for the header and the different data lines in the csv file (e.g. adaptation to other languages)
 
+Additionally you can add indirect transfers (who went through an exchange, for example) as normal deposit/withdrawals between your accounts.
+In the `indirectTx` section you can configure such detours:
+Lets say the tx 12345678901234567890 sends 60 LSK to bittrex, a 2nd tx sends 50 LSK back to account 11111111111111111111L.
+With the following configuration you will get:
+* one tx over 50 LSK from your account directly to 11111111111111111111L
+* one tx with the remaining 10 LSK from your account to the original destination of tx 12345678901234567890 (e.g. bittrex).
+```
+"indirectTx": {
+    "12345678901234567890": { "account": "11111111111111111111L", "amount": "5000000000", "comment": "over bittrex" },
+  },
+```
 The `accountDatas` section consists of three lists, the `ignore` and the `external` list where described above.
 The 3rd list, the `accountDatas.names` list, implements an accounID->Name Mapping. If the script find an account in this list, the name is used in the csv file instead of the account address.
 

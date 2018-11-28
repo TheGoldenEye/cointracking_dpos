@@ -153,7 +153,20 @@ function txCallback(result)
     var arr   = data.newApi ? result.data : result.transactions;
     arr.forEach(function(tx) {
       if (tx.type==0)       // send
-        tx.senderId==data.account ? outTx(tx) : inTx(tx);
+        {
+        var tx1   = {};
+        var tx2   = {};
+        var isOut = tx.senderId==data.account;
+        var res = isIndirectTx(isOut, tx);
+        if (res.tx1)
+          {
+          isOut ? outTx(res.tx1) : inTx(res.tx1);
+          if (res.tx2)
+            isOut ? outTx(res.tx2) : inTx(res.tx2);
+          }
+        else
+          isOut ? outTx(tx) : inTx(tx);
+        }
       else if (tx.type==1)  // second signature creation
         secondsigTx(tx);
       else if (tx.type==2)  // delegate registration
@@ -179,6 +192,44 @@ function txCallback(result)
     data.async_cb(data.newApi ? result.message : result.error);
   };
   
+//---------------------------------------
+function isIndirectTx(isOut, tx)
+  {
+  var res = {};
+  var d = cfg.indirectTx[tx.id];
+  if (!d)
+    return res;
+
+  var account2 = d.account;
+  var amount2  = d.amount || '0';
+  if (!account2 || !amount2)
+    return res;
+
+  var remaining = Number(tx.amount)-Number(amount2);
+  if (remaining>0)                      // we need a 2nd tx
+   remaining-=Number(tx.fee);
+
+  if (remaining<0)
+    return res;
+
+  res.tx1 = extend(true, {}, tx);       // create a real copy
+
+  // the redirected tx:
+  isOut ? res.tx1.recipientId = account2 : res.tx1.senderId = account2;
+  res.tx1.amount = amount2;
+  res.tx1.asset.data = 'indirect tx';
+
+  // the rest goes to the original destination
+  if (remaining)
+    {
+    res.tx2 = extend(true, {}, tx);     // create a real copy
+    res.tx2.id += '#2';
+    res.tx2.amount = remaining.toString();
+    }
+
+  return res;
+  }
+
 //---------------------------------------
 // send outgoing
 function outTx(tx)

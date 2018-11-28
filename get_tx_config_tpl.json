@@ -52,6 +52,11 @@
     "outTx0":   "\"{0}\",\"{9}\",\"{10}\",\"{1}\",\"{2}\",\"{3}\",\"{2}\",\"Wallet_{2}\",\"{5}\",\"tx:{4} Donation to {7}{8}\",\"Wallet_{5}_{4}\",\"{6}\"\n"
   },
 
+  "indirectTx": {
+    "12345678901234567890": { "account": "11111111111111111111L", "amount": "5000000000", "comment": "through bittrex" },
+    "09876543210987654321": { "account": "22222222222222222222L", "amount": "5000000000", "comment": "through bittrex" },
+  },
+
   "accountDatas": {
     "ignore": {
       "1111111111111111111L" : { "name": "account1", "comment": "Please remove this line if not needed" },
