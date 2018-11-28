@@ -54,7 +54,7 @@
 
   "indirectTx": {
     "12345678901234567890": { "account": "11111111111111111111L", "amount": "5000000000", "comment": "through bittrex" },
-    "09876543210987654321": { "account": "22222222222222222222L", "amount": "5000000000", "comment": "through bittrex" },
+    "09876543210987654321": { "account": "22222222222222222222L", "amount": "5000000000", "comment": "through bittrex" }
   },
 
   "accountDatas": {

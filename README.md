@@ -43,6 +43,7 @@ After the import the data is considered in the "Tax Report", section "Income Rep
 Configuration is done with `get_forging_config.json` file. Please save the `get_forging_config_tpl.json` file as `get_forging_config.json`.
 
 `start` and `end` defines the time intervall
+                                              is sufficient
 
 `outputDir` is the directory where the csv files will be created
 
@@ -123,7 +124,7 @@ With the following configuration you will get:
 * one tx with the remaining 10 LSK from your account to the original destination of tx 12345678901234567890 (e.g. bittrex).
 ```
 "indirectTx": {
-    "12345678901234567890": { "account": "11111111111111111111L", "amount": "5000000000", "comment": "over bittrex" },
+    "12345678901234567890": { "account": "11111111111111111111L", "amount": "5000000000", "comment": "over bittrex" }
   },
 ```
 The `accountDatas` section consists of three lists, the `ignore` and the `external` list where described above.
