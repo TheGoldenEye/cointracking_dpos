@@ -93,6 +93,7 @@ function accountData(account, d) {
   var ext    = cfg.accountDatas.external[account];
   var res    = cfg.accountDatas.names[account];
 
+  d.id       = account;
   d.name     = res ? res.name : ign ? ign.name : intern ? intern.name : ext ? ext.name : account;
   d.ign      = ign ? (!(cfg.createInternalTx && intern) && !ext) : false;  // do not ignore tx, if internal/external tx should be created
   d.intern   = intern;
@@ -256,7 +257,7 @@ function outTx(tx)
   if (d.extern)
     {
     fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
-    fs.appendFileSync(data.fileNameExt, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    fs.appendFileSync(data.fileNameExt, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, d.id, TimeStr(tx.timestamp), data.accountName, ref));
     }
   else if (d.intern)
     fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Withdrawal', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
@@ -295,7 +296,7 @@ function inTx(tx)
   if (d.extern)
     {
     fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
-    fs.appendFileSync(data.fileNameExt, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    fs.appendFileSync(data.fileNameExt, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, d.id, TimeStr(tx.timestamp), data.accountName, ref));
     return;
     }
   else if (d.intern)
