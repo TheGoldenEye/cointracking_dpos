@@ -4,6 +4,8 @@
 
   "outputDir": "./output/",
 
+  "zeroCostBase":     false,
+
   "accounts": {
     "lisk": {
       "use": true,
@@ -64,6 +66,6 @@
 
   "csv": {
     "header": "\"Type\",\"Buy\",\"Cur.\",\"Sell\",\"Cur.\",\"Fee\",\"Cur.\",\"Exchange\",\"Group\",\"Comment\",\"Date\",\"TradeID\",\"BuyValue\",\"SellValue\"\n",
-    "line": "\"{0}\",\"{1}\",\"{2}\",\"\",\"\",\"\",\"\",\"{7}\",\"{3}\",\"Forging {4} blocks each {5} {2} + fees\",\"{6}\",\"Forging_{3}_{6}\",\"{8}\",\"{9}\"\n"
+    "line": "\"{0}\",\"{1}\",\"{2}\",\"\",\"\",\"\",\"\",\"{7}\",\"{3}\",\"Forging {4} blocks each {5} {2} + fees\",\"{6}\",\"Forging_{3}_{6}\",\"{8}\"\n"
   }
 }

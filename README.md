@@ -47,6 +47,8 @@ Configuration is done with `get_forging_config.json` file. Please save the `get_
 
 `outputDir` is the directory where the csv files will be created
 
+If `zeroCostBase` is set to true (default: false), all forged coins are valued at zero cost (in fiat currency), otherwise they are valued at market prices.
+
 In the `accounts` section you can define the delegate data and which coins you want to use.
 * If `use` is set to true, then the data for this coin are queried
 * `exch` defines the 'exchange' shown in cointracking, any value is possible

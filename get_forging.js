@@ -113,7 +113,7 @@ function processForged(result)
   totalForged[data.coin] += Number(result.forged/1e8);
   process.stdout.write(format('Forging {0} : {1} {2}    \r', date, sForged, data.coin));
   if (sForged!=0)
-    fs.appendFileSync(data.fileName, format(cfg.csv.line, 'Mining', sForged, data.coin, data.id, result.count, precisionRound(rewardBl, 4), date, data.exch, "", ""));
+    fs.appendFileSync(data.fileName, format(cfg.csv.line, 'Mining', sForged, data.coin, data.id, result.count, precisionRound(rewardBl, 4), date, data.exch, cfg.zeroCostBase ? "0.00000001" : ""));
   }
 
 //------------------------------------------------------------------------------------
