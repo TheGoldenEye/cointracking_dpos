@@ -256,17 +256,13 @@ function outTx(tx)
 
   if (d.extern)
     {
-    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
-    fs.appendFileSync(data.fileNameExt, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, d.id, TimeStr(tx.timestamp), data.accountName, ref));
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, ""));
+    fs.appendFileSync(data.fileNameExt, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, d.id, TimeStr(tx.timestamp), data.accountName, ref, ""));
     }
   else if (d.intern)
-    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Withdrawal', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
-  else if (cfg.zeroCostBase)
-    // Currently it's not possible to import data with asset value=0 (zero cost base) in cointracking
-    // we emulate this with a "Trade" transaction
-    fs.appendFileSync(data.fileName, format(cfg.csv.outTx0, 'Trade', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, 0, cfg.fiat_currency));
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Withdrawal', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, ""));
   else
-    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, cfg.zeroCostBase ? "0.00000001" : ""));
   }
 
 //---------------------------------------
@@ -295,46 +291,42 @@ function inTx(tx)
 
   if (d.extern)
     {
-    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
-    fs.appendFileSync(data.fileNameExt, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, d.id, TimeStr(tx.timestamp), data.accountName, ref));
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Income', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, ""));
+    fs.appendFileSync(data.fileNameExt, format(cfg.csv.outTx, 'Spend', tx.amountFee2, data.coin, tx.fee2, tx.id, d.id, TimeStr(tx.timestamp), data.accountName, ref, ""));
     return;
     }
   else if (d.intern)
-    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Deposit', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
-  else if (cfg.zeroCostBase)
-    // Currently it's not possible to import data with asset value=0 (zero cost base) in cointracking
-    // we emulate this with a "Trade" transaction
-    fs.appendFileSync(data.fileName, format(cfg.csv.inTx0, 'Trade', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, 0, cfg.fiat_currency));
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Deposit', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, ""));
   else
-    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Gift/Tip', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref));
+    fs.appendFileSync(data.fileName, format(cfg.csv.inTx, 'Gift/Tip', tx.amount2, data.coin, 0, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, cfg.zeroCostBase ? "0.00000001" : ""));
   }
   
 //---------------------------------------
 // second signature creation
 function secondsigTx(tx)
   {
-  fs.appendFileSync(data.fileName, format(cfg.csv.secondsig, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
+  fs.appendFileSync(data.fileName, format(cfg.csv.fee, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency, "Second Signature Creation Fee"));
   }
 
 //---------------------------------------
 // delegate registration
 function delegateTx(tx)
   {
-  fs.appendFileSync(data.fileName, format(cfg.csv.delegate, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
+  fs.appendFileSync(data.fileName, format(cfg.csv.fee, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency, "Delegate Registration Fee"));
   }
 
 //---------------------------------------
 // vote
 function voteTx(tx)
   {
-  fs.appendFileSync(data.fileName, format(cfg.csv.vote, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
+  fs.appendFileSync(data.fileName, format(cfg.csv.fee, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency, "Voting Fee"));
   }
 
 //---------------------------------------
 // multisignature creation
 function multisigTx(tx)
   {
-  fs.appendFileSync(data.fileName, format(cfg.csv.multisig, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency));
+  fs.appendFileSync(data.fileName, format(cfg.csv.fee, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency, "Multisig Creation Fee"));
   }
 
 //---------------------------------------
