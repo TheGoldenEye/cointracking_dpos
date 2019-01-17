@@ -266,7 +266,7 @@ function outTx(tx)
     fs.appendFileSync(data.fileName, format(cfg.csv.fee, Number(tx.fee/1e8).toFixed(8), data.coin, tx.id, data.account, TimeStr(tx.timestamp), cfg.fiat_currency, "Withdrawal Fee"));
     }
   else
-    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, cfg.zeroCostBase ? "0.00000001" : ""));
+    fs.appendFileSync(data.fileName, format(cfg.csv.outTx, 'Donation', tx.amountFee2, data.coin, tx.fee2, tx.id, data.account, TimeStr(tx.timestamp), accID, ref, "0.00000001"));
   }
 
 //---------------------------------------
