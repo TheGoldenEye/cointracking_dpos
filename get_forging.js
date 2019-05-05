@@ -98,7 +98,7 @@ function forgeCallback(result)
     }
   else
     {
-    data.cb(red(data.node.newApi ? result.description : result.error));
+    data.cb(red(data.node.newApi ? result.message : result.error));
     }
   };
   
