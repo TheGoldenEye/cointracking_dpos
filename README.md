@@ -21,7 +21,7 @@ The following coins are supported:
 Install nodejs, npm and git
 
 ``` bash
-sudo apt install nodejs node-typescript npm git
+sudo apt install nodejs npm git
 ```
 
 Clone the git repository:
