@@ -1,18 +1,28 @@
-// Copyright © 2018 GoldenEye
+// Copyright © 2018-20 GoldenEye
 // Removal or modification of this copyright notice is prohibited.
 
-var https = require('https');
-var querystring = require('querystring');
-var format = require('string-format');
-var fs = require('fs');
-var async = require('async');
-var extend = require('extend');
-var cfg = require('./get_forging_config.json');
-var cfg_tpl = require('./get_forging_config_tpl.json');
+const https = require('https');
+const querystring = require('querystring');
+const format = require('string-format');
+const fs = require('fs');
+const async = require('async');
+//const extend = require('extend');
+
+//------------------------------------------------------------------------------------
+function LoadConfigFile(cfgFile) {
+  const configFile = cfgFile || './config/get_forging_config.json';
+  const configFile_tpl = './config/get_forging_config_tpl.json';
+
+  // first copy config from template, if not there
+  if (!fs.existsSync(configFile))
+    fs.copyFileSync(configFile_tpl, configFile);
+
+  return JSON.parse(fs.readFileSync(configFile, 'utf8'));
+}
 
 //------------------------------------------------------------------------------------
 function accountData(account) {
-  var data = cfg.accounts[account];
+  const data = cfg.accounts[account];
   if (data)
     data.node = cfg.nodes[account];
   return data;
@@ -21,61 +31,60 @@ function accountData(account) {
 //------------------------------------------------------------------------------------
 function apiGet(path, params, cb) {
 
-  var options = {
+  const options = {
     host: data.node.host,
     port: data.node.port,
-    path: path+'?'+querystring.stringify(params),
+    path: path + '?' + querystring.stringify(params),
     method: 'GET',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   };
 
-  var req = https.request(options, function(response) {
-    var body = '';
-    response.on('data', function(d) {
+  const req = https.request(options, function (response) {
+    let body = '';
+    response.on('data', function (d) {
       body += d;
     });
 
-    response.on('end', function() {
-      var parsed = ParseJsonString(body);
+    response.on('end', function () {
+      const parsed = ParseJsonString(body);
       if (parsed)
-        cb( parsed );
+        cb(parsed);
       else
         data.cb(red(body));
     });
   });
-  
+
   req.end();
-  
-  req.on('error', function(e) {
+
+  req.on('error', function (e) {
     data.cb(red(e.toString()));
   });
-};
+}
 
 //------------------------------------------------------------------------------------
 // two-digit number format
-function pad(number)
-  { 
-  return (number < 10) ? '0' + number : number; 
-  }
+function pad(number) {
+  return (number < 10) ? '0' + number : number;
+}
 
 //------------------------------------------------------------------------------------
 // timestamp as string
-function TimeStr(timestamp, date, time)
-  {
-  var d = new Date(timestamp);
+function TimeStr(timestamp, date, time) {
+  const d = new Date(timestamp);
 
-  var s = '';
+  let s = '';
   if (date)
-    s = s+ d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
-  if (time)
-    {
-    if (s!='')
+    s = s + d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+  if (time) {
+    if (s != '')
       s = s + ' ';
     s = s + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds());
-    }
+  }
 
   return s;
-  }
+}
 
 //---------------------------------------
 function ParseJsonString(str) {
@@ -83,81 +92,70 @@ function ParseJsonString(str) {
     return JSON.parse(str);
   } catch (e) {
     return undefined;
-    }
   }
+}
 
 //---------------------------------------
 // callback
-function forgeCallback(result) 
-  {
-  var ok = data.node.newApi ? result.data : result.success;
-  if (ok)
-    {
+function forgeCallback(result) {
+  const ok = data.node.newApi ? result.data : result.success;
+  if (ok) {
     processForged(data.node.newApi ? result.data : result);
     data.cb(null);
-    }
-  else
-    {
+  } else {
     data.cb(red(data.node.newApi ? result.message : result.error));
-    }
-  };
-  
+  }
+}
+
 //---------------------------------------
 // processing
-function processForged(result)
-  {
-  var date      = TimeStr(data.end, true, false)
-  var sForged   = Number(result.forged/1e8).toFixed(8);
-  var rewardBl  = Number(result.rewards/1e8) / Number(result.count);
+function processForged(result) {
+  const date = TimeStr(data.end, true, false);
+  const sForged = Number(result.forged / 1e8).toFixed(8);
+  const rewardBl = Number(result.rewards / 1e8) / Number(result.count);
 
-  totalForged[data.coin] += Number(result.forged/1e8);
+  totalForged[data.coin] += Number(result.forged / 1e8);
   process.stdout.write(format('Forging {0} : {1} {2}    \r', date, sForged, data.coin));
-  if (sForged!=0)
+  if (sForged != 0)
     fs.appendFileSync(data.fileName, format(cfg.csv.line, 'Mining', sForged, data.coin, data.id, result.count, precisionRound(rewardBl, 4), date, data.exch, cfg.zeroCostBase ? "0.00000001" : ""));
-  }
+}
 
 //------------------------------------------------------------------------------------
-const colReset       = "\x1b[0m";
-const colFgGreen     = "\x1b[32m";
-const colFgYellow    = "\x1b[33m";
+const colReset = "\x1b[0m";
+const colFgGreen = "\x1b[32m";
+const colFgYellow = "\x1b[33m";
 
 //------------------------------------------------------------------------------------
 function green(txt) {
-  return colFgGreen+txt+colReset;
+  return colFgGreen + txt + colReset;
 }
 
 //------------------------------------------------------------------------------------
 function red(txt) {
-  return colFgYellow+txt+colReset;
+  return colFgYellow + txt + colReset;
 }
 
 //---------------------------------------
 // exact round
-function precisionRound(number, precision)
-  {
-  var factor = Math.pow(10, precision);
+function precisionRound(number, precision) {
+  const factor = Math.pow(10, precision);
   return Math.round(number * factor) / factor;
-  }
+}
 
 //---------------------------------------
-function mkdir(dirPath)
-  {
-  try
-    {
-    fs.mkdirSync(dirPath)
-    }
-  catch (err)
-    {
-    if (err.code !== 'EEXIST') throw err
-    }
+function mkdir(dirPath) {
+  try {
+    fs.mkdirSync(dirPath);
+  } catch (err) {
+    if (err.code !== 'EEXIST') throw err;
   }
+}
 
 //---------------------------------------
 //---------------------------------------
 // main
 
-function main(account, intervall, idx, cb)
-  {
+function main(account, intervall, idx, cb) {
   data = accountData(account);
   data = cfg.accounts[account];
 
@@ -166,14 +164,13 @@ function main(account, intervall, idx, cb)
 
   totalForged[data.coin] = totalForged[data.coin] || 0;
 
-  data.start    = intervall.start;
-  data.end      = intervall.end;
+  data.start = intervall.start;
+  data.end = intervall.end;
   data.fileName = cfg.outputDir + TimeStr(endTime, true, false) + '_' + data.coin + '_' + data.name + '_FORGING.csv';
 
-  data.cb       = cb;
+  data.cb = cb;
 
-  if (idx==0)
-    {
+  if (idx == 0) {
     if (cfg.outputDir)
       mkdir(cfg.outputDir);
 
@@ -181,27 +178,33 @@ function main(account, intervall, idx, cb)
       fs.unlinkSync(data.fileName);
 
     fs.writeFileSync(data.fileName, cfg.csv.header);
-    }
-
-  var path = '';
-  var params = {};
-  if (data.node.newApi)
-    {
-    path   = '/api/delegates/' + data.id + '/forging_statistics/';
-    params = { fromTimestamp: data.start, toTimestamp: data.end};
-    }
-  else
-    {
-    path   = '/api/delegates/forging/getForgedByAccount/';
-    params = { generatorPublicKey: data.pk, start: Math.floor(data.start/1000), end: Math.floor(data.end/1000)};
-    }
-  apiGet(path, params, forgeCallback);
   }
 
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  let path = '';
+  let params = {};
+  if (data.node.newApi) {
+    path = '/api/delegates/' + data.id + '/forging_statistics/';
+    params = {
+      fromTimestamp: data.start,
+      toTimestamp: data.end
+    };
+  } else {
+    path = '/api/delegates/forging/getForgedByAccount/';
+    params = {
+      generatorPublicKey: data.pk,
+      start: Math.floor(data.start / 1000),
+      end: Math.floor(data.end / 1000)
+    };
+  }
+  apiGet(path, params, forgeCallback);
+}
 
-//apply config defaults (not deep, only root level)
-cfg = extend(false, cfg_tpl, cfg);
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// start:
+const cfg = LoadConfigFile();
+//cfg = extend(false, cfg_tpl, cfg); //apply config defaults (not deep, only root level)
 
 // Lisk
 // 1st Block with rewards: https://explorer.lisk.io/block/14795541625652526135
@@ -212,78 +215,90 @@ cfg = extend(false, cfg_tpl, cfg);
 // 2016/05/24 19:00:00
 // rewards from Block 10
 
-var beginTime   = new Date(cfg.start).getTime();
-var endTime     = new Date(cfg.end).getTime();
-var nowTime     = new Date().getTime();
-var vctLisk     = [];
-var vctShift    = [];
-var vctOxy      = [];
-var vctRise     = [];
-var totalForged = {};
-var t;
-var data;
+const beginTime = new Date(cfg.start).getTime();
+let endTime = new Date(cfg.end).getTime();
+const nowTime = new Date().getTime();
+const vctLisk = [];
+const vctShift = [];
+const vctOxy = [];
+const vctRise = [];
+const totalForged = {};
+let t;
+let data;
 
 //correct endTime, if in the future
-if (endTime>nowTime)
-  endTime = nowTime-86400000;                      // only use complete days
+if (endTime > nowTime)
+  endTime = nowTime - 86400000; // only use complete days
 
 // collect time slices (days)
-for (t=beginTime; t<=endTime; t+=86400000)
-  vctLisk.push( {start: t, end: t+86399999} );
+for (t = beginTime; t <= endTime; t += 86400000)
+  vctLisk.push({
+    start: t,
+    end: t + 86399999
+  });
 
-for (t=beginTime; t<=endTime; t+=86400000) 
-  vctShift.push( {start: t, end: t+86399999} );
+for (t = beginTime; t <= endTime; t += 86400000)
+  vctShift.push({
+    start: t,
+    end: t + 86399999
+  });
 
-for (t=beginTime; t<=endTime; t+=86400000)
-  vctOxy.push( {start: t, end: t+86399999} );
+for (t = beginTime; t <= endTime; t += 86400000)
+  vctOxy.push({
+    start: t,
+    end: t + 86399999
+  });
 
-for (t=beginTime; t<=endTime; t+=86400000)
-  vctRise.push( {start: t, end: t+86399999} );
+for (t = beginTime; t <= endTime; t += 86400000)
+  vctRise.push({
+    start: t,
+    end: t + 86399999
+  });
 
 // lisk
-async.eachOfSeries(vctLisk, 
-  function(item, idx, cb) {
+async.eachOfSeries(vctLisk,
+  function (item, idx, cb) {
     main('lisk', item, idx, cb);
-  },  
-  function(err) {
-    if ( err )
+  },
+  function (err) {
+    if (err)
       console.log('Lisk:', err, '            ');
     else
       console.log('Lisk  total forged: %s %s     ', totalForged[data.coin], data.coin);
 
-  // shift
-  async.eachOfSeries(vctShift, 
-    function(item, idx, cb) {
-      main('shift', item, idx, cb);
-    },
-    function(err) {
-      if ( err )
-        console.log('Shift:', err, '            ');
-      else
-        console.log('Shift total forged: %s %s     ', totalForged[data.coin], data.coin);
-
-    // oxy
-    async.eachOfSeries(vctOxy, 
-      function(item, idx, cb) {
-        main('oxy', item, idx, cb);
-      },  
-      function(err) {
-        if ( err )
-          console.log('Oxy:', err, '            ');
+    // shift
+    async.eachOfSeries(vctShift,
+      function (item, idx, cb) {
+        main('shift', item, idx, cb);
+      },
+      function (err) {
+        if (err)
+          console.log('Shift:', err, '            ');
         else
-          console.log('Oxy   total forged: %s %s     ', totalForged[data.coin], data.coin);
+          console.log('Shift total forged: %s %s     ', totalForged[data.coin], data.coin);
 
-      // rise
-      async.eachOfSeries(vctRise, 
-        function(item, idx, cb) {
-          main('rise', item, idx, cb);
-        },  
-        function(err) {
-          if ( err )
-            console.log('Rise:', err, '            ');
-          else
-            console.log('Rise  total forged: %s %s     ', totalForged[data.coin], data.coin);
-        });
+        // oxy
+        async.eachOfSeries(vctOxy,
+          function (item, idx, cb) {
+            main('oxy', item, idx, cb);
+          },
+          function (err) {
+            if (err)
+              console.log('Oxy:', err, '            ');
+            else
+              console.log('Oxy   total forged: %s %s     ', totalForged[data.coin], data.coin);
+
+            // rise
+            async.eachOfSeries(vctRise,
+              function (item, idx, cb) {
+                main('rise', item, idx, cb);
+              },
+              function (err) {
+                if (err)
+                  console.log('Rise:', err, '            ');
+                else
+                  console.log('Rise  total forged: %s %s     ', totalForged[data.coin], data.coin);
+              });
+          });
       });
-    });
   });
