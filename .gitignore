@@ -1,4 +1,4 @@
 node_modules/
 output/
-get_tx_config.json
-get_forging_config.json
+config/
+.vscode/
