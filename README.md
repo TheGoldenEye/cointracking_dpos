@@ -55,8 +55,9 @@ After the import the data is considered in the "Tax Report", section "Income Rep
 
 ### 3.1 Configuration
 
-Configuration is done with `get_forging_config.json` file. Please save the
-`get_forging_config_tpl.json` file as `get_forging_config.json`.
+Configuration is done with `config/get_forging_config.json` file. Please save the config
+template file `config/get_forging_config_tpl.json` as `config/get_forging_config.json`.
+(This is also done automatically at first start.)
 
 `start` and `end` defines the time intervall
 
@@ -84,9 +85,11 @@ lines in the csv file (e.g. adaptation to other languages)
 ### 3.2 Start
 
 ``` bash
-node get_forging.js
+node get_forging.js [-c <configFile>] [-y <year>]
 ```
 
+With the option -c you can define another config file.  
+The option -y forces the output to the given year (overwrites the start/end settings in the configuration).  
 The output files are written to the configured `outputDir` directory.
 
 ## 4 get_tx.js script
@@ -117,7 +120,9 @@ the data in the "Tax Report", sections "Income Report" (Gift) and Donation Repor
 
 ### 4.1 Configuration
 
-Configuration is done with `get_tx_config.json` file. Please save the `get_tx_config_tpl.json` file as `get_tx_config.json`.
+Configuration is done with `config/get_tx_config.json` file.
+Please save the config template file `config/get_tx_config_tpl.json` as `config/get_tx_config.json`.
+(This is also done automatically at first start.)
 
 `outputDir` is the directory where the csv files will be created
 
@@ -172,9 +177,10 @@ The 3rd list, the `accountDatas.names` list, implements an accounID->Name Mappin
 ### 4.2 Start
 
 ``` bash
-node get_tx.js
+node get_tx.js [-c <configFile>]
 ```
 
+With the option -c you can define another config file.  
 The output files are written to the configured `outputDir` directory.
 
 ## 5 Authors
