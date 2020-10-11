@@ -1,10 +1,11 @@
-// Copyright © 2018 GoldenEye
+// Copyright © 2018-20 GoldenEye
 // Removal or modification of this copyright notice is prohibited.
 
 const https = require('https');
 const querystring = require('querystring');
 const format = require('string-format');
 const fs = require('fs');
+const extend = require('extend');
 const async = require('async');
 const getPackageVersion = require('@jsbits/get-package-version');
 const program = require('commander');
