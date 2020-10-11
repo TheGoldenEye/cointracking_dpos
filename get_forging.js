@@ -115,8 +115,12 @@ function processForged(result) {
 
   totalForged[data.coin] += Number(result.forged / 1e8);
   process.stdout.write(format('Forging {0} : {1} {2}    \r', date, sForged, data.coin));
-  if (sForged != 0)
-    fs.appendFileSync(data.fileName, format(cfg.csv.line, 'Mining', sForged, data.coin, data.id, result.count, precisionRound(rewardBl, 4), date, data.exch, cfg.zeroCostBase ? "0.00000001" : ""));
+  if (sForged != 0) {
+    let exch = data.exch;
+    if (exch.includes('%y')) // replace '%y' with the current year
+      exch = exch.replace('%y', date.substr(0, 4));
+    fs.appendFileSync(data.fileName, format(cfg.csv.line, 'Mining', sForged, data.coin, data.id, result.count, precisionRound(rewardBl, 4), date, exch, cfg.zeroCostBase ? "0.00000001" : ""));
+  }
 }
 
 //------------------------------------------------------------------------------------
@@ -207,7 +211,7 @@ program
   .version(getPackageVersion())
   //  .option('-d, --debug', 'output extra debugging')
   .option('-c, --config <configFile>', 'configFile to use', './config/get_forging_config.json')
-  .option('-y, --year <year>', 'the year to use')
+  .option('-y, --year <year>', 'the year to use (overwrites the values from config file)')
   .parse(process.argv);
 
 const cfg = LoadConfigFile(program.opts().config);
@@ -221,8 +225,18 @@ const cfg = LoadConfigFile(program.opts().config);
 // 2016/05/24 19:00:00
 // rewards from Block 10
 
-const beginTime = new Date(cfg.start).getTime();
-let endTime = new Date(cfg.end).getTime();
+let beginTime;
+let endTime;
+if (program.opts().year) {
+  const y = Number(program.opts().year);
+  beginTime = new Date(Date.UTC(y, 0, 1)).getTime();
+  endTime = new Date(Date.UTC(y, 11, 31)).getTime();
+} else {
+  // ISO 8601 date strings are treated as UTC
+  beginTime = new Date(cfg.start).getTime();
+  endTime = new Date(cfg.end).getTime();
+}
+
 const nowTime = new Date().getTime();
 const vctLisk = [];
 const vctShift = [];
