@@ -39,6 +39,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@jsbits/get-package-version@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@jsbits/get-package-version/-/get-package-version-1.0.3.tgz#a47dfd077420beee435580c3bc197931fe3c694c"
+  integrity sha512-IJy1jRL01x7p6UEpgKa1lVLstMUx8EiIR8pPoS5sBfsHEoeLkzYiNpAfxPx8zLDUJyS1yBbChJjcWdPqyH285w==
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -179,6 +184,11 @@ color-name@~1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
+
+commander@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-6.1.0.tgz#f8d722b78103141006b66f4c7ba1e97315ba75bc"
+  integrity sha512-wl7PNrYWd2y5mp1OK/LhTlv8Ff4kQJQRXXAvF+uU/TPNiVJUxZLRYGj/B0y/lPGAVcSbJqH2Za/cvHmrPMC8mA==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -400,11 +410,6 @@ exit@0.1.2, exit@0.1.x:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/exit/-/exit-0.1.2.tgz#0632638f8d877cc82107d30a0fff1a17cba1cd0c"
   integrity sha1-BjJjj42HfMghB9MKD/8aF8uhzQw=
-
-extend@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
-  integrity sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==
 
 fast-deep-equal@^3.1.1:
   version "3.1.3"

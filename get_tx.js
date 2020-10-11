@@ -6,18 +6,17 @@ const querystring = require('querystring');
 const format = require('string-format');
 const fs = require('fs');
 const async = require('async');
-//const extend = require('extend');
+const getPackageVersion = require('@jsbits/get-package-version');
+const program = require('commander');
 
 //------------------------------------------------------------------------------------
 function LoadConfigFile(cfgFile) {
-  const configFile = cfgFile || './config/get_tx_config.json';
-  const configFile_tpl = './config/get_tx_config_tpl.json';
+  const cfgFile_tpl = './config/get_forging_config_tpl.json';
 
   // first copy config from template, if not there
-  if (!fs.existsSync(configFile))
-    fs.copyFileSync(configFile_tpl, configFile);
-
-  return JSON.parse(fs.readFileSync(configFile, 'utf8'));
+  if (!fs.existsSync(cfgFile))
+    fs.copyFileSync(cfgFile_tpl, cfgFile);
+  return JSON.parse(fs.readFileSync(cfgFile, 'utf8'));
 }
 
 //------------------------------------------------------------------------------------
@@ -388,8 +387,13 @@ function main(coin, node, account, idx, async_cb) {
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // start:
 
-const cfg = LoadConfigFile();
-//const cfg = extend(false, cfg_tpl, cfg1); //apply config defaults (not deep, only root level)
+program
+  .version(getPackageVersion())
+  //  .option('-d, --debug', 'output extra debugging')
+  .option('-c, --config <configFile>', 'configFile to use', './config/get_tx_config.json')
+  .parse(process.argv);
+
+const cfg = LoadConfigFile(program.opts().config);
 
 let data = {};
 
