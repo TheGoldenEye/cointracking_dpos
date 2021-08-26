@@ -114,6 +114,7 @@ function processForged(result) {
   const rewardBl = Number(result.rewards / 1e8) / Number(result.count);
 
   totalForged[data.coin] += Number(result.forged / 1e8);
+  blocks[data.coin] += Number(result.count);
   process.stdout.write(format('Forging {0} : {1} {2}    \r', date, sForged, data.coin));
   if (sForged != 0) {
     let exch = data.exch;
@@ -166,6 +167,7 @@ function main(account, intervall, idx, cb) {
     return cb("disabled");
 
   totalForged[data.coin] = totalForged[data.coin] || 0;
+  blocks[data.coin] = blocks[data.coin] || 0;
 
   data.start = intervall.start;
   data.end = intervall.end;
@@ -243,6 +245,7 @@ const vctShift = [];
 const vctOxy = [];
 const vctRise = [];
 const totalForged = {};
+const blocks = {};
 let t;
 let data;
 
@@ -284,7 +287,7 @@ async.eachOfSeries(vctLisk,
     if (err)
       console.log('Lisk:', err, '            ');
     else
-      console.log('Lisk  total forged: %s %s     ', totalForged[data.coin], data.coin);
+      console.log('Lisk  total forged: %s %s (%d blocks)    ', totalForged[data.coin], data.coin, blocks[data.coin]);
 
     // shift
     async.eachOfSeries(vctShift,
@@ -295,7 +298,7 @@ async.eachOfSeries(vctLisk,
         if (err)
           console.log('Shift:', err, '            ');
         else
-          console.log('Shift total forged: %s %s     ', totalForged[data.coin], data.coin);
+          console.log('Shift total forged: %s %s (%d blocks)     ', totalForged[data.coin], data.coin, blocks[data.coin]);
 
         // oxy
         async.eachOfSeries(vctOxy,
@@ -306,7 +309,7 @@ async.eachOfSeries(vctLisk,
             if (err)
               console.log('Oxy:', err, '            ');
             else
-              console.log('Oxy   total forged: %s %s     ', totalForged[data.coin], data.coin);
+              console.log('Oxy   total forged: %s %s (%d blocks)     ', totalForged[data.coin], data.coin, blocks[data.coin]);
 
             // rise
             async.eachOfSeries(vctRise,
@@ -317,7 +320,7 @@ async.eachOfSeries(vctLisk,
                 if (err)
                   console.log('Rise:', err, '            ');
                 else
-                  console.log('Rise  total forged: %s %s     ', totalForged[data.coin], data.coin);
+                  console.log('Rise  total forged: %s %s (%d blocks)     ', totalForged[data.coin], data.coin, blocks[data.coin]);
               });
           });
       });
