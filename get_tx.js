@@ -12,7 +12,7 @@ const program = require('commander');
 
 //------------------------------------------------------------------------------------
 function LoadConfigFile(cfgFile) {
-  const cfgFile_tpl = './config/get_forging_config_tpl.json';
+  const cfgFile_tpl = './config/get_tx_config_tpl.json';
 
   // first copy config from template, if not there
   if (!fs.existsSync(cfgFile))
