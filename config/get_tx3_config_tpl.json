@@ -1,0 +1,40 @@
+{
+  "outputDir":        "./output/",
+  "createInternalTx": false,
+  "zeroCostBase":     false,
+  "fiat_currency":    "EUR",
+
+  "accounts": {
+    "lisk": [
+      { "id": "lsk11111111111111111111111111111111111111", "comment": "any comment (not used)" },
+      { "id": "lsk22222222222222222222222222222222222222", "comment": "any comment (not used)" }
+    ]
+  },
+
+  "nodes": {
+    "lisk": {
+      "host": "service.lisk.io",
+      "port": 443
+    }
+  },
+
+  "csv": {
+    "header":   "\"Type\",\"Buy\",\"Cur.\",\"Sell\",\"Cur.\",\"Fee\",\"Cur.\",\"Exchange\",\"Group\",\"Comment\",\"Date\",\"TradeID\",\"BuyValue\",\"SellValue\"",
+    "fee":      "\n\"Trade\",\"0\",\"{5}\",\"{0}\",\"{1}\",\"{0}\",\"{1}\",\"Wallet_{1}3\",\"{3}\",\"tx:{2} {6}\",\"{4}\",\"Wallet_{3}_{2}\",\"0.00000001\",\"0.00000001\"",
+    "inTx":     "\n\"{0}\",\"{1}\",\"{2}\",,,\"{3}\",\"{2}\",\"Wallet_{2}3\",\"{5}\",\"tx:{4} {0} from {7}{8}\",\"{6}\",\"Wallet_{5}_{4}\",\"{9}\",",
+    "outTx":    "\n\"{0}\",,,\"{1}\",\"{2}\",\"{3}\",\"{2}\",\"Wallet_{2}3\",\"{5}\",\"tx:{4} {0} to {7}{8}\",\"{6}\",\"Wallet_{5}_{4}\",,\"{9}\""
+  },
+
+  "accountDatas": {
+    "ignore": {
+      "lsk33333333333333333333333333333333333333" : { "name": "account1", "comment": "Please remove this line if not needed" },
+      "lsk44444444444444444444444444444444444444" : { "name": "account2", "comment": "Please remove this line if not needed" }
+    },
+    "external": {
+      "lsk55555555555555555555555555555555555555" : { "name": "bittrex",  "comment": "exchange account - Please remove this line if not needed" }
+    },
+    "names": {
+      }
+   }
+
+}

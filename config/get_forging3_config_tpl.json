@@ -1,0 +1,49 @@
+{
+  "start": "2021-08-21",
+  "end":   "2021-12-31",
+
+  "outputDir": "./output/",
+
+  "zeroCostBase":     false,
+
+  "accounts": [
+    {
+      "use": false,
+      "node": "mainnet2",
+      "coin": "LSK",
+      "exch": "Forging_LSK",
+      "id":   "15056673209583244182L",
+      "name": "goldeneye",
+      "pk":   "f91766de68f3a8859a3634c3a0fdde38ebd82dd91fc37b67ac6cf010800a3e6e"
+    },
+    {
+      "use":  true,
+      "node": "mainnet3",
+      "coin": "LSK",
+      "exch": "Forging_LSK3_%y",
+      "id":   "lskrd4qt5pvxtd9z5mcwqn5hp5ygjzggnr2d3p2w3",
+      "name": "goldeneye",
+      "pk":   "f91766de68f3a8859a3634c3a0fdde38ebd82dd91fc37b67ac6cf010800a3e6e"
+    }
+  ],
+
+  "nodes": {
+    "mainnet2": {
+      "host":   "service.lisk.io",
+      "port":   443,
+      "path":   "/api/v1/blocks",
+      "params": "?address={0}&from={1}&to={2}&limit=100&offset=0&sort=height%3Aasc"
+    },
+    "mainnet3": {
+      "host":   "service.lisk.io",
+      "port":   443,
+      "path":   "/api/v2/blocks",
+      "params": "?generatorAddress={0}&timestamp={1}:{2}&limit=100&offset=0&sort=height%3Aasc"
+    }
+  },
+
+  "csv": {
+    "header": "\"Type\",\"Buy\",\"Cur.\",\"Sell\",\"Cur.\",\"Fee\",\"Cur.\",\"Exchange\",\"Group\",\"Comment\",\"Date\",\"TradeID\",\"BuyValue\",\"SellValue\"",
+    "line": "\n\"{0}\",\"{1}\",\"{2}\",\"\",\"\",\"\",\"\",\"{7}\",\"{3}\",\"Forging {4} blocks each {5} {2} + fees\",\"{6}\",\"Forging_{3}_{6}\",\"{8}\""
+  }
+}
