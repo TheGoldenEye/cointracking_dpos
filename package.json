@@ -16,7 +16,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@jsbits/get-package-version": "^1.0.3",
-    "async": "^2.6.1",
+    "async": "^2.6.4",
     "commander": "^6.1.0",
     "extend": "^3.0.2",
     "fs": "0.0.1-security",
